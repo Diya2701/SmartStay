@@ -1,0 +1,127 @@
+<% layout("/layouts/boilerplate")%>
+<script>
+    const mapToken = "<%= process.env.MAP_TOKEN %>";
+    const listingData = <%- JSON.stringify(listing) %>;
+</script>
+<div class="row">
+    <div class="col-8 offset-3">
+        <h2 class="listing-title"><%= listing.title %></h2>
+    </div>
+
+    <div class="card col-6 offset-3 show-card" >
+        <img src="<%= listing.image.url %>" class="card-img-top  show-img"  alt="Listing Image">
+        <div class="card-body">
+            <p class="card-text">
+            
+            <p class="listing-owner">
+                <span class="badge bg-light text-dark border px-3 py-2">
+                    <i class="fas fa-user-circle me-2"></i>
+                    Hosted by <%= listing.owner.username %>
+                </span>
+            </p>
+            <%= listing.description %> <br>
+
+            <strong>&#8377;<%= listing.price.toLocaleString("en-IN")%></strong> <br>
+            
+            <%= listing.location %> <br>
+            
+            <%= listing.country %></p>
+        </div>
+    </div>
+    <% if(currentUser && currentUser._id.equals(listing.owner._id)){%>
+    <div class="btns col-6 offset-3">
+        <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark">Edit</a> &nbsp
+        <form action="/listings/<%=listing._id%>?_method=DELETE" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-primary">Delete</button>
+        </form>
+        <br><br>
+    </div>
+    <%} %>
+    <div class="mb-3 col-6 offset-3">
+        <h3>Where you'll be</h3>
+        <div id="map"></div>
+        
+    </div>
+    <div class="btns col-6 offset-3">
+        <div class="reviews-list">
+            <h4>Reviews</h4>
+            <% if (listing.reviews && listing.reviews.length > 0) { %>
+                <% listing.reviews.forEach(function(review){ %>
+                    <div class="review-item">
+                        <div class="review-rating">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
+                        style="width:48px;height:48px;">
+                        <i class="fas fa-user text-secondary"></i>
+                    </div>
+                
+                    <div>
+                        <h6 class="mb-0 fw-bold">@<%= review.author.username %>
+                        </h6>
+                        <small class="text-muted">Verified Reviewer</small>
+                    </div>
+                </div>
+                            <% for (let i = 1; i <= 5; i++) { %>
+                                <span class="star <%= i <= (review.rating || 0) ? 'filled' : '' %>">★</span>
+                            <% } %>
+                        </div>
+                        <p class="review-comment"><%= review.comment %></p>
+                        <% if(currentUser && currentUser._id.equals(review.author._id)){%>
+                        <div class="review-meta">
+                            <small class="text-muted"><%= new Date(review.createdAt).toLocaleDateString() %></small>
+                            <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="delete-review-form">
+                                <button type="submit" class="btn btn-outline-danger  btn-sm">Delete Review</button>
+                            </form>
+                        </div>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="no-reviews">No reviews yet.</p>
+            <% } %>
+        </div>
+    </div>
+    
+    <% if(currentUser) {%>
+    <div class="btns col-6 offset-3">
+        <div class="review-card">
+            <div class="review-card-header">
+                <h4>Leave a Review</h4>
+                <p>Share your experience and help future guests.</p>
+            </div>
+            <form class="review-form needs-validation" novalidate method="POST" action="/listings/<%= listing._id %>/reviews">
+                <div class="mb-3">
+                    <label class="form-label" for="rating">Rating<span class="text-danger">*</span></label>
+                    <div class="review-stars">
+                        <input type="radio" id="star5" name="review[rating]" value="5" required>
+                        <label for="star5" >★</label>
+                        <input type="radio" id="star4" name="review[rating]" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="review[rating]" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="review[rating]" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="review[rating]" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                    <div class="invalid-feedback rating-feedback">Please select a rating before submitting.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="comment">Your Comment<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="comment" name="review[comment]" rows="4" placeholder="Tell guests what stood out during your stay..." required></textarea>
+                    <div class="invalid-feedback">Comment cannot be empty.</div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+            </form>
+         
+        </div>
+        <br>
+    </div>
+    <% } else { %>
+        <div class="btns col-6 offset-3">
+            <p class="text-center">Please <a href="/login">login</a> to leave a review.</p>
+        </div>
+    <% } %>
+</div>
+
+<script src="/js/map.js"></script>

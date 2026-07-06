@@ -1,0 +1,123 @@
+
+<% layout("/layouts/boilerplate")%>
+<body>
+    
+
+<!-- <h2 class="listing-title">All Listings</h2><br> -->
+<!-- <form action="/listings/new" method="GET">
+<button>Create New Listing</button>
+</form> -->
+<div class="page-intro">
+    <div>
+        <p class="intro-eyebrow">SmartStay</p>
+        <h2 class="intro-title">Explore a world of beautiful places with SmartStay</h2>
+    </div>
+    <label class="intro-toggle" for="taxes-toggle">
+        <span class="intro-toggle__label">Show price after taxes</span>
+        <span class="intro-toggle__switch">
+            <input type="checkbox" id="taxes-toggle" />
+            <span class="intro-toggle__slider"></span>
+        </span>
+    </label>
+</div>
+
+<div id="filters" class="filters-bar">
+    <a class="filter-chip" href="/listings">
+        <i class="fa-solid fa-house"></i>
+        <span>All</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Nature">
+        <i class="fa-solid fa-tree"></i>
+        <span>Nature</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Beach">
+        <i class="fa-solid fa-water"></i>
+        <span>Beach</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=City">
+        <i class="fa-solid fa-city"></i>
+        <span>City</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Mountain">
+        <i class="fa-solid fa-mountain"></i>
+        <span>Mountain</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Camping">
+        <i class="fa-solid fa-campground"></i>
+        <span>Camping</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Trending">
+        <i class="fa-solid fa-fire"></i>
+        <span>Trending</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Food">
+        <i class="fa-solid fa-utensils"></i>
+        <span>Food</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Wellness">
+        <i class="fa-solid fa-spa"></i>
+        <span>Wellness</span>
+    </a>
+    <a class="filter-chip" href="/listings?category=Road%20Trip">
+        <i class="fa-solid fa-car"></i>
+        <span>Road Trip</span>
+    </a>
+</div>
+
+<!-- Card view for listings -->
+<% if (allListings.length === 0) { %>
+<div class="listings-grid-empty">
+    <h4>No listings found</h4>
+    <p>Try a different search term or browse all stays to discover more options.</p>
+</div>
+<% } else { %>
+<div class="listings-grid">
+<% for (let listing of allListings) { %>
+<a href="/listings/<%= listing._id %>" class="listing-card">
+    <div class="card">
+        <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image">
+        <div class="card-body">
+            <p class="card-text">
+                <strong><%= listing.title %></strong>
+                <span class="d-block text-muted"><%= listing.location %></span>
+                <span class="d-block" style="margin-top:.5rem">
+                    <span class="listing-price" data-base-price="<%= listing.price %>">&#8377;<%= listing.price.toLocaleString("en-IN")%>/night</span>
+                    <i class="tax-info" style="display:none"> incl. 18% GST</i>
+                </span>
+            </p>
+        </div>
+        <div style="padding:0 1rem 1rem;">
+            <span class="btn btn-primary">View Details</span>
+        </div>
+    </div>
+</a>
+<% } %>
+</div>
+<% } %>
+
+<!-- logic for toggling price display with taxes -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const taxSwitch = document.getElementById('taxes-toggle');
+        const priceEls = document.querySelectorAll('.listing-price');
+        const taxInfoEls = document.querySelectorAll('.tax-info');
+
+        if (!taxSwitch) return;
+
+        taxSwitch.addEventListener('change', () => {
+            const showTax = taxSwitch.checked;
+
+            priceEls.forEach((priceEl) => {
+                const basePrice = parseFloat(priceEl.dataset.basePrice);
+                if (Number.isNaN(basePrice)) return;
+
+                const displayPrice = showTax ? basePrice * 1.18 : basePrice;
+                priceEl.innerHTML = `&#8377;${displayPrice.toLocaleString('en-IN')}/night`;
+            });
+
+            taxInfoEls.forEach((info) => {
+                info.style.display = showTax ? 'inline' : 'none';
+            });
+        });
+    });
+</script>

@@ -1,0 +1,29 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8 col-lg-6">
+    <div class="card border-theme shadow-sm no-hover-card">
+      <div class="card-body text-center py-5">
+        <div class="mb-4">
+          <span class="badge rounded-pill theme-badge py-2 px-3 fs-6">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            Error
+          </span>
+        </div>
+        <h1 class="display-6 fw-bold theme-accent mb-3">Oops! Something went wrong.</h1>
+        <p class="lead mb-4 text-secondary">
+          <strong><%= err.statusCode || 500 %></strong> — <%= err.message || 'An unexpected error occurred while processing your request.' %>
+        </p>
+        <div class="mb-4">
+          <i class="fa-solid fa-circle-exclamation fa-3x theme-accent"></i>
+        </div>
+        <p class="text-muted mb-4">
+          Please try again or return to the home page.
+        </p>
+        <a href="/listings" class="btn theme-btn btn-lg px-4">
+          <i class="fa-solid fa-house me-2"></i>Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
