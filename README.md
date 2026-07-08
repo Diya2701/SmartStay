@@ -1,6 +1,6 @@
 # 🏡 SmartStay
 
-A **full-stack vacation rental web application** inspired by Airbnb that enables users to discover, create, manage, and review property listings through a secure and responsive interface.
+A **full-stack vacation rental web application** that enables users to discover, create, manage, and review property listings through a secure and responsive interface.
 
 **🌐 Live Demo:** 
 https://smartstay-9gsz.onrender.com/listings  
